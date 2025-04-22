@@ -8,7 +8,6 @@ import { ActionResult } from "@/types";
 import { User } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
-import { redirect } from "next/dist/server/api-utils";
 
 export async function signInUser(data: LoginSchema): Promise<ActionResult<string>> {
     try {

@@ -10,7 +10,9 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {},
+      backgroundImage: {
+        'dark-gradient': 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)' 
+      }
     },
   },
   plugins: [heroui()],
