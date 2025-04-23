@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { GiPadlock } from 'react-icons/gi';
 import { registerUser } from '@/app/actions/authActions';
+import { handleFormServerErrors } from '@/lib/util';
 
 export default function RegisterForm() {
     const { register, handleSubmit, setError, formState: {errors, isValid, isSubmitting} } = useForm<RegisterSchema>({
@@ -20,15 +21,7 @@ export default function RegisterForm() {
         if(result.status === 'success') {
             console.log("User registered successfully");
         } else {
-            if(Array.isArray(result.error)) {
-                result.error.forEach((e) => {
-                    const fieldName = e.path.join('.') as 'email' | 'name' | 'password';
-                    setError(fieldName, {message: e.message});
-                })
-            } else {
-                setError('root.serverError', {message: result.error});
-            }
-            console.log(result.error);
+           handleFormServerErrors(result, setError);
         }
     };
 
