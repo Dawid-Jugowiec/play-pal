@@ -5,6 +5,7 @@ import { Image } from '@heroui/image';
 import { Divider } from '@heroui/divider';
 import { getMembersPhotosByUsersId } from '@/app/actions/memberActions';
 import { notFound } from 'next/navigation';
+import { transformImageUrl } from '@/lib/util';
 
 
 export default async function PhotosPage({params}: {params: Promise<{userId: string}>}) {
@@ -24,7 +25,7 @@ export default async function PhotosPage({params}: {params: Promise<{userId: str
                     <div key={photo.id}> 
                         <Image 
                             width={300}
-                            src={photo.url}
+                            src={transformImageUrl(photo.url) ?? undefined}
                             alt='Image of the member'
                             className='object-cover aspect-square'
                         />
