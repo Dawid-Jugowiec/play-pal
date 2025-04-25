@@ -1,23 +1,33 @@
 import React from 'react';
-import { CardBody, CardHeader } from '@heroui/card';
-import { Divider } from '@heroui/divider';
-import { getMemberByUserId } from '@/app/actions/memberActions';
-import { notFound } from 'next/navigation';
+import CardInnerWrapper from '@/components/CardInnerWrapper';
+import ChatForm from './ChatForm';
+import { getMessageThread } from '@/app/actions/messageActions';
+import MessageBox from './MessageBox';
+import { getAuthUserId } from '@/app/actions/authActions';
 
-export default async function ChatPage({params}: {params: Promise<{userId: string}>}) {
-    const { userId } = await params;
-    
-    const member = await getMemberByUserId(userId);
-    if (!member) return notFound();
+export default async function ChatPage({params}:{params: Promise<{userId: string}>}) {
+
+  const currentUserId = await getAuthUserId();
+  const {userId} = await params;
+  const messages = await getMessageThread(userId);
+  
+  const body = (
+    <div>
+      {messages.length === 0 ? 'No messages to display' : (
+        <div>
+          {messages.map(message=>(
+            <MessageBox key={message.id} message={message} currentUserId={currentUserId}/>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+  
   return (
-    <>
-        <CardHeader className='text-2xl font-semibold text-secondary'>
-            Chat
-        </CardHeader>
-        <Divider />
-        <CardBody>
-            Chat goes here
-        </CardBody>
-    </>
+    <CardInnerWrapper 
+      header="Chat"
+      body={body}
+      footer={<ChatForm />}
+    />
   )
 }

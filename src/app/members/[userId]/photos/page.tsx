@@ -1,11 +1,10 @@
 import React from 'react';
-import { CardBody, CardHeader } from '@heroui/card';
 import { Image } from '@heroui/image';
 
-import { Divider } from '@heroui/divider';
 import { getMembersPhotosByUsersId } from '@/app/actions/memberActions';
 import { notFound } from 'next/navigation';
 import { transformImageUrl } from '@/lib/util';
+import CardInnerWrapper from '@/components/CardInnerWrapper';
 
 
 export default async function PhotosPage({params}: {params: Promise<{userId: string}>}) {
@@ -15,12 +14,9 @@ export default async function PhotosPage({params}: {params: Promise<{userId: str
     if (!photos) return notFound();
   return (
     <>
-        <CardHeader className='text-2xl font-semibold text-secondary'>
-            Photos
-        </CardHeader>
-        <Divider />
-        <CardBody>
-           <div className='grid grid-cols-5 gap-3'>
+        <CardInnerWrapper 
+            header="Photos"
+            body={<div className='grid grid-cols-5 gap-3'>
                 {photos && photos.map(photo => (
                     <div key={photo.id}> 
                         <Image 
@@ -31,8 +27,8 @@ export default async function PhotosPage({params}: {params: Promise<{userId: str
                         />
                     </div>
                 ))}
-           </div>
-        </CardBody>
+           </div>}
+        />
     </>
   )
 }
