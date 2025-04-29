@@ -13,7 +13,7 @@ export default async function MessagesPage({searchParams}: {searchParams: Promis
           <MessagesSideBar />
         </div>
         <div className='col-span-10'>
-          <MessagesTable messages={messages} />
+          <MessagesTable initialMessages={messages} />
         </div>
       </div>
     )

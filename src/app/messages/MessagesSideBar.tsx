@@ -1,5 +1,6 @@
 'use client';
 
+import useMessageStore from '@/hooks/useMessageStore';
 import { Chip } from '@heroui/react'
 import clsx from 'clsx'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -9,6 +10,7 @@ import { MdOutlineOutbox } from 'react-icons/md'
 
 
 export default function MessagesSideBar() {
+    const unreadMessage = useMessageStore(state => state.unreadCount);
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const router = useRouter();
@@ -38,7 +40,7 @@ export default function MessagesSideBar() {
                     <Icon size={24} />
                     <div className='flex justify-between flex-grow'> 
                         <span>{label}</span>
-                        {chip && <Chip>5</Chip>}
+                        {chip && <Chip>{unreadMessage}</Chip>}
                     </div>
                 </div>
             ))}
