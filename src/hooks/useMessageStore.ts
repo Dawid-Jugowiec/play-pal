@@ -14,7 +14,7 @@ type MessageState = {
 const useMessageStore = create<MessageState>()(devtools((set) => ({
     messages: [],
     unreadCount: 0,
-    add: (message) => set((state) => ({messages: [...state.messages, message]})),
+    add: (message) => set((state) => ({messages: [message, ...state.messages]})),
     remove: (id) => set((state) => ({messages: state.messages.filter(message => message.id !== id)})),
     set: (messages) => set({messages}),
     updateUnreadCount: (amount: number) => set(state => ({
