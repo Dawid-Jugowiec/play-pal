@@ -17,7 +17,7 @@ export default function PaginationComponent({ totalCount }: {totalCount: number}
 
     const { pageNumber, pageSize, totalPages } = pagination;
 
-    
+
 
     useEffect(() => {
         setPagination(totalCount);
@@ -34,7 +34,7 @@ export default function PaginationComponent({ totalCount }: {totalCount: number}
                 <Pagination 
                     total={totalPages}
                     color='secondary'
-                    initialPage={pageNumber}
+                    page={pageNumber}
                     variant='bordered'
                     onChange={setPage}
                 />
