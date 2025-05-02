@@ -1,6 +1,6 @@
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useTransition } from 'react'
+import React, { ChangeEvent, useEffect, useTransition } from 'react'
 import { FaMale, FaFemale } from 'react-icons/fa';
 import useFilterStore from './useFilterStore';
 import { Selection } from '@heroui/react';
@@ -22,14 +22,14 @@ export default function useFilters() {
         totalCount: state.pagination.totalCount
     })));
 
-    const { ageRange, gender, orderBy} = filters;
+    const { ageRange, gender, orderBy, withPhoto} = filters;
 
     useEffect(() => {
-        if (gender || ageRange || orderBy) {
+        if (gender || ageRange || orderBy || withPhoto) {
             setPage(1);
         }
 
-    }, [gender, ageRange, orderBy, setPage])
+    }, [gender, ageRange, orderBy, withPhoto, setPage])
 
     useEffect(() => {
         startTransition(() => {
@@ -40,10 +40,11 @@ export default function useFilters() {
             if (orderBy) searchParams.set('orderBy', orderBy);
             if (pageSize) searchParams.set('pageSize', pageSize.toString());
             if (pageNumber) searchParams.set('pageNumber', pageNumber.toString());
+            searchParams.set('withPhoto', withPhoto.toString());
     
             router.replace(`${pathname}?${searchParams}`);
         }) 
-    },[ageRange, orderBy, gender, router, pathname, pageNumber, pageSize]);
+    },[ageRange, orderBy, gender, router, pathname, pageNumber, pageSize, withPhoto]);
 
     const orderByList = [
         {label: 'Last active', value: 'updated'},
@@ -71,6 +72,10 @@ export default function useFilters() {
        else setFilters('gender', [...gender, value]);
     }
 
+    const handleWithPhotoToggle = (e: ChangeEvent<HTMLInputElement>) => {
+        setFilters('withPhoto', e.target.checked);
+    };
+
     return {
         orderByList,
         genderList,
@@ -80,5 +85,6 @@ export default function useFilters() {
         filters,
         isPending,
         totalCount,
+        selectWithPhoto: handleWithPhotoToggle
     };
 };

@@ -11,9 +11,11 @@ export async function getMembers({
     gender = 'male,female',
     orderBy = 'updated',
     pageNumber = '1',
-    pageSize = '12'
+    pageSize = '12',
+    withPhoto = 'true',
 }: GetMemberParams): Promise<PaginatedResponse<Member>> {
     const userId = await getAuthUserId();
+    const  photoSelector = withPhoto === 'true' ? { not: 'null' } : {};
 
     const [minAge, maxAge] = ageRange.split(',')
     const currentDate = new Date();
@@ -34,7 +36,8 @@ export async function getMembers({
                 AND: [
                     {dateOfBirth: {gte: minDob}},
                     {dateOfBirth: {lte: maxDob}},
-                    {gender: {in: selectedGender}}
+                    {gender: {in: selectedGender}},
+                    {image: photoSelector}
                 ],
                 NOT: {
                     userId
@@ -47,7 +50,8 @@ export async function getMembers({
                 AND: [
                     {dateOfBirth: {gte: minDob}},
                     {dateOfBirth: {lte: maxDob}},
-                    {gender: {in: selectedGender}}
+                    {gender: {in: selectedGender}},
+                    {image: photoSelector}
                 ],
                 NOT: {
                     userId

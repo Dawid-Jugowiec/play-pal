@@ -11,7 +11,7 @@ import { Spinner, Switch } from '@heroui/react';
 export default function Filters() {
     const pathname = usePathname();
     const { filters, genderList, orderByList, 
-        selectAge, selectGender, selectOrder, isPending, totalCount} = useFilters();
+        selectAge, selectGender, selectOrder, selectWithPhoto, isPending, totalCount} = useFilters();
 
     if (pathname !== '/members') return null;
 
@@ -47,6 +47,17 @@ export default function Filters() {
                         maxValue={100}
                         defaultValue={filters.ageRange}
                         onChangeEnd={(value) => selectAge(value as number[])}
+                    />
+                </div>
+                <div className='flex flex-col items-center'>
+                    <p className='text-sm'>
+                        { filters.withPhoto ? 'with photo' : 'no photo' }
+                    </p>
+                    <Switch
+                        color='secondary'
+                        defaultSelected
+                        size='sm'
+                        onChange={selectWithPhoto}
                     />
                 </div>
                 <div className='w-1/4'>
