@@ -5,7 +5,7 @@ import { Member } from '@prisma/client';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, {Key, useTransition} from 'react'
 import MemberCard from '../members/MemberCard';
-import LoadingComponents from '@/components/LoadingComponents';
+import LoadingComponent from '@/components/LoadingComponent';
 
 type Props = {
     members: Member[];
@@ -44,7 +44,7 @@ export default function ListsTab({members, likeIds}: Props) {
                 {(item) => (
                     <Tab key={item.id} title={item.label}>
                         {isPending ? (
-                            <LoadingComponents />
+                            <LoadingComponent />
                         ): (
                             <>
                                 {members.length > 0 ? (
