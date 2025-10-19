@@ -1,45 +1,56 @@
-import { useShallow } from 'zustand/shallow';
+import { useShallow } from "zustand/shallow";
 import { pusherClient } from "@/lib/pusher";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Channel } from "pusher-js";
 import { useCallback, useEffect, useRef } from "react";
 import useMessageStore from "./useMessageStore";
-import { MessageDto } from '@/types';
-import { newMessageToast, newLikeToast} from '@/components/NotificationToast';
+import { MessageDto } from "@/types";
+import { newMessageToast, newLikeToast } from "@/components/NotificationToast";
 
-export const useNotificationChannel = (userId: string | null) => {
+export const useNotificationChannel = (
+    userId: string | null,
+    profileComplete: boolean
+) => {
     const channelRef = useRef<Channel | null>(null);
 
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const { add, updateUnreadCount } = useMessageStore(useShallow(state => ({
-        add: state.add,
-        updateUnreadCount: state.updateUnreadCount
-    })));
+    const { add, updateUnreadCount } = useMessageStore(
+        useShallow((state) => ({
+            add: state.add,
+            updateUnreadCount: state.updateUnreadCount,
+        }))
+    );
 
-    const handleNewMessage = useCallback((message: MessageDto) => {
-        if (pathname === '/messages' && searchParams.get('container') !== 'outbox') {
-            add(message);
-            updateUnreadCount(1);
-        } else if (pathname !== `/members/${message.senderId}/chat`) {
-            newMessageToast(message);
-            updateUnreadCount(1);
-        } 
-    }, [add, pathname, searchParams, updateUnreadCount]);
+    const handleNewMessage = useCallback(
+        (message: MessageDto) => {
+            if (
+                pathname === "/messages" &&
+                searchParams.get("container") !== "outbox"
+            ) {
+                add(message);
+                updateUnreadCount(1);
+            } else if (pathname !== `/members/${message.senderId}/chat`) {
+                newMessageToast(message);
+                updateUnreadCount(1);
+            }
+        },
+        [add, pathname, searchParams, updateUnreadCount]
+    );
 
+    const handleNewLike = useCallback(
+        (data: { name: string; image: string | null; userId: string }) => {
+            newLikeToast(data.name, data.image, data.userId);
+        },
+        []
+    );
 
-    const handleNewLike = useCallback((data: {
-        name: string, image: string | null, userId: string 
-    }) => {
-        newLikeToast(data.name, data.image, data.userId);
-    }, []);
-
-    useEffect(()=>{
-        if (!userId) return;
+    useEffect(() => {
+        if (!userId || !profileComplete) return;
         if (!channelRef.current) {
             channelRef.current = pusherClient.subscribe(`private-${userId}`);
-            channelRef.current.bind('message:new', handleNewMessage);
-            channelRef.current.bind('like:new', handleNewLike);
+            channelRef.current.bind("message:new", handleNewMessage);
+            channelRef.current.bind("like:new", handleNewLike);
         }
 
         return () => {
@@ -48,6 +59,6 @@ export const useNotificationChannel = (userId: string | null) => {
                 channelRef.current.unbind_all();
                 channelRef.current = null;
             }
-        }
-    },[userId, handleNewMessage, handleNewLike])
+        };
+    }, [userId, handleNewMessage, handleNewLike, profileComplete]);
 };
